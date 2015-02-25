@@ -19,13 +19,20 @@ if(!empty($_POST))
 	$displayname = trim($_POST["displayname"]);
 	$password = trim($_POST["password"]);
 	$confirm_pass = trim($_POST["passwordc"]);
-	$captcha = md5($_POST["captcha"]);
+	$reCaptcha = new ReCaptcha($secretKey);
 	
-	
-	if ($captcha != $_SESSION['captcha'])
-	{
-		$errors[] = lang("CAPTCHA_FAIL");
+	// Was there a reCAPTCHA response?
+	if ($_POST["g-recaptcha-response"]) {
+	    $resp = $reCaptcha->verifyResponse(
+	        $_SERVER["REMOTE_ADDR"],
+	        $_POST["g-recaptcha-response"]
+	    );
 	}
+
+	if (!($resp != null && $resp->success)) {
+    	$errors[] = lang("CAPTCHA_FAIL");
+	}
+	
 	if(minMaxRange(5,25,$username))
 	{
 		$errors[] = lang("ACCOUNT_USER_CHAR_LIMIT",array(5,25));
@@ -83,6 +90,7 @@ if(!empty($_POST))
 require_once("models/header.php");
 echo "
 <body>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <div id='wrapper'>
 <div id='top'><div id='logo'></div></div>
 <div id='content'>
@@ -122,12 +130,7 @@ echo "
 <label>Email:</label>
 <input type='text' name='email' />
 </p>
-<p>
-<label>Security Code:</label>
-<img src='models/captcha.php'>
-</p>
-<label>Enter Security Code:</label>
-<input name='captcha' type='text'>
+<div class='g-recaptcha' data-sitekey='".$siteKey."'></div>
 </p>
 <label>&nbsp;<br>
 <input type='submit' value='Register'/>

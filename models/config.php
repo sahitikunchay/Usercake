@@ -26,6 +26,8 @@ $resend_activation_threshold = $settings['resend_activation_threshold']['value']
 $emailDate = date('dmy');
 $language = $settings['language']['value'];
 $template = $settings['template']['value'];
+$siteKey = $settings['site-key']['value'];
+$secretKey = $settings['secret']['value'];
 
 $master_account = -1;
 
@@ -40,6 +42,8 @@ if(!isset($language)) $language = "models/languages/en.php";
 
 //Pages to require
 require_once($language);
+require_once("library/PasswordHash.php");
+require_once("library/recaptchalib.php");
 require_once("class.mail.php");
 require_once("class.user.php");
 require_once("class.newuser.php");

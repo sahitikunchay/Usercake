@@ -67,18 +67,20 @@ function generateActivationToken($gen = null)
 }
 
 //@ Thanks to - http://phpsec.org
-function generateHash($plainText, $salt = null)
+function generateHash($plainText, $stored_pass=NULL)
 {
-	if ($salt === null)
+	$hasher = new PasswordHash(8, false);
+
+	if ($stored_pass === null)
 	{
-		$salt = substr(md5(uniqid(rand(), true)), 0, 25);
+		$hash = $hasher->HashPassword($plainText);
+		return $hash;
 	}
 	else
 	{
-		$salt = substr($salt, 0, 25);
+		$check = $hasher->CheckPassword($plainText, $stored_pass);
+		return $check;
 	}
-	
-	return $salt . sha1($salt . $plainText);
 }
 
 //Checks if an email is valid
