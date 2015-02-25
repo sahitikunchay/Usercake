@@ -14,11 +14,63 @@ if(isUserLoggedIn()) { header("Location: account.php"); die(); }
 if(!empty($_POST))
 {
 	$errors = array();
-	$email = trim($_POST["email"]);
-	$username = trim($_POST["username"]);
-	$displayname = trim($_POST["displayname"]);
-	$password = trim($_POST["password"]);
-	$confirm_pass = trim($_POST["passwordc"]);
+	
+	if($_POST["email"]==NULL){
+		$errors[] = lang("ACCOUNT_SPECIFY_EMAIL");
+	} else {
+		$email = trim($_POST["email"]);
+		if(!isValidEmail($email))
+	{
+		$errors[] = lang("ACCOUNT_INVALID_EMAIL");
+	}
+	}
+	
+	if($_POST["username"]==NULL){
+		$errors[] = lang("ACCOUNT_SPECIFY_USERNAME");
+	} else {
+		$username = trim($_POST["username"]);
+		if(minMaxRange(5,25,$username))
+	{
+		$errors[] = lang("ACCOUNT_USER_CHAR_LIMIT",array(5,25));
+	}
+	if(!ctype_alnum($username)){
+		$errors[] = lang("ACCOUNT_USER_INVALID_CHARACTERS");
+	}
+	}
+	
+	if($_POST["displayname"]==null){
+		$errors[] = lang("ACCOUNT_SPECIFY_DISPLAYNAME");
+	} else {
+		$displayname = trim($_POST["displayname"]);
+		if(minMaxRange(5,25,$displayname))
+	{
+		$errors[] = lang("ACCOUNT_DISPLAY_CHAR_LIMIT",array(5,25));
+	}
+	if(!ctype_alnum($displayname)){
+		$errors[] = lang("ACCOUNT_DISPLAY_INVALID_CHARACTERS");
+	}
+	}
+	
+	if($_POST["password"]==null){
+		$errors[] = lang("ACCOUNT_SPECIFY_NEW_PASSWORD");
+	} else {
+		$password = trim($_POST["password"]);
+		if(minMaxRange(8,50,$password) && minMaxRange(8,50,$confirm_pass))
+	{
+		$errors[] = lang("ACCOUNT_PASS_CHAR_LIMIT",array(8,50));
+	}
+	}
+	
+	if($_POST["passwordc"]==null){
+		$errors[] = lang("ACCOUNT_SPECIFY_CONFIRM_PASSWORD");
+	} else {
+		$confirm_pass = trim($_POST["passwordc"]);
+		 if($password != $confirm_pass)
+	{
+		$errors[] = lang("ACCOUNT_PASS_MISMATCH");
+	}
+	}
+	
 	$reCaptcha = new ReCaptcha($secretKey);
 	
 	// Was there a reCAPTCHA response?
@@ -27,38 +79,21 @@ if(!empty($_POST))
 	        $_SERVER["REMOTE_ADDR"],
 	        $_POST["g-recaptcha-response"]
 	    );
-	}
-
-	if (!($resp != null && $resp->success)) {
+		if (!($resp!= null && $resp->success)) {
     	$errors[] = lang("CAPTCHA_FAIL");
 	}
+	}
+	else{
+		$errors[] = lang("CAPTCHA_FAIL");
+	}
+
 	
-	if(minMaxRange(5,25,$username))
-	{
-		$errors[] = lang("ACCOUNT_USER_CHAR_LIMIT",array(5,25));
-	}
-	if(!ctype_alnum($username)){
-		$errors[] = lang("ACCOUNT_USER_INVALID_CHARACTERS");
-	}
-	if(minMaxRange(5,25,$displayname))
-	{
-		$errors[] = lang("ACCOUNT_DISPLAY_CHAR_LIMIT",array(5,25));
-	}
-	if(!ctype_alnum($displayname)){
-		$errors[] = lang("ACCOUNT_DISPLAY_INVALID_CHARACTERS");
-	}
-	if(minMaxRange(8,50,$password) && minMaxRange(8,50,$confirm_pass))
-	{
-		$errors[] = lang("ACCOUNT_PASS_CHAR_LIMIT",array(8,50));
-	}
-	else if($password != $confirm_pass)
-	{
-		$errors[] = lang("ACCOUNT_PASS_MISMATCH");
-	}
-	if(!isValidEmail($email))
-	{
-		$errors[] = lang("ACCOUNT_INVALID_EMAIL");
-	}
+	
+	
+	
+	
+	
+	
 	//End data validation
 	if(count($errors) == 0)
 	{	

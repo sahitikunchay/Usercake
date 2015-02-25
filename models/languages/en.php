@@ -13,6 +13,7 @@ $lang = array();
 //Account
 $lang = array_merge($lang,array(
 	"ACCOUNT_SPECIFY_USERNAME" 		=> "Please enter your username",
+	"ACCOUNT_SPECIFY_DISPLAYNAME" 		=> "Please enter your displayname",
 	"ACCOUNT_SPECIFY_PASSWORD" 		=> "Please enter your password",
 	"ACCOUNT_SPECIFY_EMAIL"			=> "Please enter your email address",
 	"ACCOUNT_INVALID_EMAIL"			=> "Invalid email address",

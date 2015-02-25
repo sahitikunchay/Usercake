@@ -6,7 +6,7 @@ http://usercake.com
 
 //Database Information
 $db_host = "localhost"; //Host address (most likely localhost)
-$db_name = "asd"; //Name of Database
+$db_name = "hello"; //Name of Database
 $db_user = "root"; //Name of database user
 $db_pass = ""; //Password for database user
 $db_table_prefix = "uc_";
