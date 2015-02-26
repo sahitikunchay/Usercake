@@ -8,6 +8,7 @@ class loggedInUser {
 	public $email = NULL;
 	public $hash_pw = NULL;
 	public $user_id = NULL;
+	public $img = NULL;
 	
 	//Simple function to update the last sign in of a user
 	public function updateLastSignIn()
@@ -67,6 +68,20 @@ class loggedInUser {
 			WHERE
 			id = ?");
 		$stmt->bind_param("si", $email, $this->user_id);
+		$stmt->execute();
+		$stmt->close();	
+	}
+	
+	public function updatePic($img)
+	{
+		global $mysqli,$db_table_prefix;
+		$this->img = $img;
+		$stmt = $mysqli->prepare("UPDATE ".$db_table_prefix."users
+			SET 
+			img = ?
+			WHERE
+			id = ?");
+		$stmt->bind_param("si", $img, $this->user_id);
 		$stmt->execute();
 		$stmt->close();	
 	}

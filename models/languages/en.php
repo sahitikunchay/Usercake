@@ -56,6 +56,10 @@ $lang = array_merge($lang,array(
 	"ACCOUNT_PERMISSION_ADDED"		=> "Added access to %m1% permission levels",
 	"ACCOUNT_PERMISSION_REMOVED"		=> "Removed access from %m1% permission levels",
 	"ACCOUNT_INVALID_USERNAME"		=> "Invalid username",
+	"FILE_SIZE_LARGE"                 => "The file you uploaded is too large",
+	"FILE_TYPE_NOT_ALLOWED"           => "Only files of .jpeg, .png, .gif type are allowed",
+	"PROFILE_PICTURE_CHANGED"         => "Profile picture has been changed",
+	"PROFILE_PICTURE_ERROR"           => "There has been an error in changing your profile picture. Please try again",
 	));
 
 //Configuration
@@ -82,6 +86,8 @@ $lang = array_merge($lang,array(
 	"FORGOTPASS_REQUEST_EXISTS"		=> "There is already a outstanding lost password request on this account",
 	"FORGOTPASS_REQUEST_SUCCESS"		=> "We have emailed you instructions on how to regain access to your account",
 	));
+	
+
 
 //Mail
 $lang = array_merge($lang,array(

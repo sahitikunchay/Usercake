@@ -14,20 +14,20 @@ if(!empty($_POST))
 {
 	$errors = array();
 	$successes = array();
-	$password = $_POST["password"];
-	$password_new = $_POST["passwordc"];
-	$password_confirm = $_POST["passwordcheck"];
+		if($_FILES['fileToUpload']['name']==NULL){
+		$password = $_POST["password"];
+		$password_new = $_POST["passwordc"];
+		$password_confirm = $_POST["passwordcheck"];
+		$email = $_POST["email"];
 	
-	$errors = array();
-	$email = $_POST["email"];
+
+$errors = array();	
 	
-	//Perform some validation
-	//Feel free to edit / change as required
 	
-	//Confirm the hashes match before updating a users password
+	if($_POST["password"]!=NULL){
 	$entered_pass = generateHash($password,$loggedInUser->hash_pw);
 	
-	if (trim($password) == ""){
+	if (trim($password) == "" ){
 		$errors[] = lang("ACCOUNT_SPECIFY_PASSWORD");
 	}
 	else if($entered_pass != $loggedInUser->hash_pw)
@@ -58,7 +58,7 @@ if(!empty($_POST))
 		}
 	}
 	
-	if ($password_new != "" OR $password_confirm != "")
+	if ($password_new != "" OR $password_confirm != "" && $_FILES['fileToUpload']['name']=="")
 	{
 		if(trim($password_new) == "")
 		{
@@ -100,7 +100,44 @@ if(!empty($_POST))
 		$errors[] = lang("NOTHING_TO_UPDATE");
 	}
 }
+	
+		}
+	//Perform some validation
+	//Feel free to edit / change as required
+	
+	else {if($_FILES['fileToUpload']['name']!=""){
+		$uploadOk=1;
+		$allowedTypes = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
+		$detectedType = exif_imagetype($_FILES['fileToUpload']['tmp_name']);
+		if( $_FILES['fileToUpload']['size'] > 2000000) {
+			$errors[] = lang("FILE_SIZE_LARGE", array(2));
+			$uploadOk = 0;
+		}
+		if(!in_array($detectedType, $allowedTypes)){
+			$errors[] = lang("FILE_TYPE_NOT_ALLOWED");
+			$uploadOk = 0;
+		}
+		$temp = explode(".", $_FILES["fileToUpload"]["name"]);
+		$newname = dirname(__FILE__).'\\user-data\\img\\'.md5($loggedInUser->user_id).'.'.end($temp);
+		if($uploadOk){
+			if(move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $newname)) {
+				$pic = md5($loggedInUser->user_id).'.'.end($temp);
+				$loggedInUser->updatePic($pic);
+				$successes[]= lang("PROFILE_PICTURE_CHANGED");
+			} else {
+				$errors[] = lang("PROFILE_PICTURE_ERROR");
+			}
+		}
+	}
+	}
 
+
+
+	
+	//Confirm the hashes match before updating a users password
+	
+
+}
 require_once("models/header.php");
 echo "
 <body>
@@ -142,11 +179,20 @@ echo "
 <input type='submit' value='Update' class='submit' />
 </p>
 </form>
+
+    <p align = centre><br><br>
+<label align = centre>Select image to upload:</label>
+ <br><br>   <input type='file' name='fileToUpload' id='fileToUpload'><br><br></p><p>
+ <br><br>   <input type=submit value=Upload Image name=submit></p>
+
 </div>
 </div>
 <div id='bottom'></div>
 </div>
 </body>
 </html>";
+
+
+
 
 ?>
